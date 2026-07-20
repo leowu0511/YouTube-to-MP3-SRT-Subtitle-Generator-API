@@ -1,0 +1,24 @@
+# Environment variables (API Keys)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+
+# Audio / Video / Subtitle temporary files
+*.mp3
+*.mp4
+*.m4a
+*.wav
+*.srt
+
+# IDE & OS
+.DS_Store
+.vscode/
+.idea/
+
+# Local SRT Cache
+srt_cache/

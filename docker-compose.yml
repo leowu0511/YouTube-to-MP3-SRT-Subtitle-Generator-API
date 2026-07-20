@@ -1,0 +1,16 @@
+services:
+  yt-mp3-api:
+    build: .
+    container_name: yt-mp3-api
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - TZ=Asia/Taipei
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+    volumes:
+      - ./srt_cache:/app/srt_cache
+    tmpfs:
+      - /tmp/yt_mp3_downloads:size=512M
