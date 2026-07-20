@@ -166,6 +166,11 @@ def download_as_mp3(url: str, output_dir: Path) -> tuple[str, str, str]:
 
     if cookie_file and cookie_file.exists():
         ydl_opts["cookiefile"] = str(cookie_file)
+        ydl_opts["extractor_args"] = {
+            "youtube": {
+                "player_client": ["web", "mweb", "android"],
+            }
+        }
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=True)
