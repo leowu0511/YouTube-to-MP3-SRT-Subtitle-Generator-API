@@ -5,9 +5,11 @@ FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-# 安裝 ffmpeg（Debian slim 使用 apt）
+# 安裝 ffmpeg 與 deno (yt-dlp 預設 JS 執行環境)
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ffmpeg nodejs && \
+    apt-get install -y --no-install-recommends ffmpeg curl unzip nodejs && \
+    curl -fsSL https://deno.land/install.sh | sh && \
+    cp /root/.deno/bin/deno /usr/local/bin/deno && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
