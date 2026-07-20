@@ -2,8 +2,7 @@ services:
   yt-mp3-api:
     build: .
     container_name: yt-mp3-api
-    ports:
-      - "8000:8000"
+    network_mode: host
     restart: unless-stopped
     env_file:
       - .env
