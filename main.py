@@ -150,7 +150,7 @@ def download_as_mp3(url: str, output_dir: Path) -> tuple[str, str, str]:
         },
         "extractor_args": {
             "youtube": {
-                "player_client": ["android", "ios"],
+                "player_client": ["android", "ios", "tv_embedded", "web_creator", "mweb"],
                 "skip": ["hls", "dash"],
             }
         },
