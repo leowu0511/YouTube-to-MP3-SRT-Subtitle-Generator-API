@@ -141,7 +141,7 @@ def download_as_mp3(url: str, output_dir: Path) -> tuple[str, str, str]:
                 break
 
     ydl_opts = {
-        "format": "bestaudio/best",
+        "format": "ba/ba*/bestaudio/best",
         "outtmpl": outtmpl,
         "postprocessors": [
             {
@@ -157,11 +157,6 @@ def download_as_mp3(url: str, output_dir: Path) -> tuple[str, str, str]:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
             "Accept-Language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
         },
-        "extractor_args": {
-            "youtube": {
-                "player_client": ["android_vr", "android", "ios", "tv"],
-            }
-        },
     }
 
     if cookie_file and cookie_file.exists():
@@ -172,10 +167,10 @@ def download_as_mp3(url: str, output_dir: Path) -> tuple[str, str, str]:
         except Exception as e:
             print(f"[WARN] 複製 Cookie 檔失敗: {e}")
             ydl_opts["cookiefile"] = str(cookie_file)
-
+    else:
         ydl_opts["extractor_args"] = {
             "youtube": {
-                "player_client": ["web", "mweb", "android"],
+                "player_client": ["android_vr", "android", "ios", "tv"],
             }
         }
 
