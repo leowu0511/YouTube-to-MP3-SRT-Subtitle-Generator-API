@@ -34,10 +34,10 @@
 
 ### 6. 🛡️ VPS 機房 IP 防封鎖與 JavaScript 挑戰解答器
 - **Deno JS 執行環境**：在 Docker 映像檔中內建 `deno` 與 `ejs:github` 組件，自動解開 YouTube JS 挑戰與 n-sig 加密。
-- **Cookies 自動載入與唯讀保護處理**：自動掃描並載入專案目錄下的 `*cookies*.txt`（如 `www.youtube.com_cookies.txt`），並在運行時自動複製至可寫入暫存區，解決 Linux Read-only 限制並徹底解除 YouTube `Sign in to confirm you're not a bot` 阻擋。
+- **Cookies 自動掃描與動態複製**：程式會自動掃描專案目錄下任何 `*cookies*.txt` 檔案（如 `cookies.txt`、`www.youtube.com_cookies.txt` 或 `www_youtube_com_cookies.txt`），並在執行時自動複製至可寫入暫存區，解決 Linux Docker 唯讀掛載限制並解除 YouTube 400 `Sign in to confirm you're not a bot` 機房封鎖。
 
 ### 7. 🐳 Docker & Docker Compose 輕量化部署
-- 基於 `python:3.11-slim` 打造輕量 Docker 映像檔，內建 `ffmpeg`、`nodejs` 與 `deno`。
+- 基於 `python:3.11-slim` 打造輕量 Docker 映像檔，內建 `ffmpeg`、`git`、`nodejs` 與 `deno`。
 - 配置 Docker Compose，提供埠號對應、自動重啟與快取目錄掛載。
 
 ---
@@ -46,13 +46,13 @@
 
 ```text
 .
-├── main.py              # FastAPI 主程式（下載、轉譯、SRT 快取與背景清理邏輯）
-├── requirements.txt     # Python 依賴套件
-├── Dockerfile           # Docker 映像檔配置（含 ffmpeg, deno 與 Python 3.11-slim）
-├── docker-compose.yml   # Docker Compose 部署檔（含 Volume 持久化快取）
-├── .env.example         # 環境變數設定範本
-├── .gitignore           # Git 忽略檔案設定（防止 Key 與 Cookies 意外外流）
-└── README.md            # 本說明文件
+├── main.py                    # FastAPI 主程式（下載、轉譯、SRT 快取與背景清理邏輯）
+├── requirements.txt           # Python 依賴套件 (含最新 yt-dlp master 分支)
+├── Dockerfile                 # Docker 映像檔配置（含 ffmpeg, deno, nodejs 與 Python 3.11-slim）
+├── docker-compose.yml         # Docker Compose 部署檔（含 Volume 持久化快取與主機目錄掛載）
+├── .env.example               # 環境變數設定範本
+├── .gitignore                 # Git 忽略檔案設定（自動遮蔽所有 *cookies*.txt 防止資安外流）
+└── README.md                  # 本說明文件
 ```
 
 ---
@@ -80,8 +80,14 @@ nano .env
 GROQ_API_KEY=gsk_your_actual_groq_api_key_here
 ```
 
-### 3. (選填) 放置 YouTube Cookies
-若您的 VPS 機房 IP 遭到 YouTube 強制驗證，請將從瀏覽器匯出的 `cookies.txt` 或 `www.youtube.com_cookies.txt` 放入本專案目錄下即可。
+### 3. 🔑 放置 YouTube Cookies (解決機房 IP 400 阻擋)
+
+由於 YouTube 對 VPS 雲端機房 IP 有嚴格的機器人驗證，強烈建議匯入 Cookies 憑證：
+
+1. 安裝瀏覽器擴充套件：[Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)。
+2. **最佳實踐**：開啟無痕視窗登入一個 **YouTube 分身帳號** ➔ 開啟 YouTube 官網 ➔ 點擊擴充套件按 **Export** 下載 **Netscape 格式** 的 `.txt` 檔。
+3. 將該檔案命名為 `cookies.txt`（或保留預設檔名 `www.youtube.com_cookies.txt` / `www_youtube_com_cookies.txt`）直接上傳至 VPS 專案根目錄下即可。
+   > 💡 專案 `.gitignore` 已設定遮蔽所有 `*cookies*.txt`，此檔案**絕對不會**被誤推送到 GitHub 上。
 
 ### 4. 一鍵啟動容器
 
