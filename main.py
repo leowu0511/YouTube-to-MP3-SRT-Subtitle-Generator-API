@@ -131,11 +131,14 @@ def download_as_mp3(url: str, output_dir: Path) -> tuple[str, str, str]:
     """
     outtmpl = str(output_dir / "%(title)s.%(ext)s")
 
-    cookie_file = Path("/app/cookies.txt")
-    if not cookie_file.exists():
-        cookie_file = Path("cookies.txt")
-    if not cookie_file.exists():
-        cookie_file = Path("/app/host_files/cookies.txt")
+    cookie_file = None
+    search_dirs = [Path("."), Path("/app"), Path("/app/host_files")]
+    for sdir in search_dirs:
+        if sdir.exists():
+            found = list(sdir.glob("*cookies*.txt"))
+            if found:
+                cookie_file = found[0]
+                break
 
     ydl_opts = {
         "format": "bestaudio/best",
@@ -161,7 +164,7 @@ def download_as_mp3(url: str, output_dir: Path) -> tuple[str, str, str]:
         },
     }
 
-    if cookie_file.exists():
+    if cookie_file and cookie_file.exists():
         ydl_opts["cookiefile"] = str(cookie_file)
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
