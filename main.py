@@ -131,6 +131,10 @@ def download_as_mp3(url: str, output_dir: Path) -> tuple[str, str, str]:
     """
     outtmpl = str(output_dir / "%(title)s.%(ext)s")
 
+    cookie_file = Path("/app/cookies.txt")
+    if not cookie_file.exists():
+        cookie_file = Path("cookies.txt")
+
     ydl_opts = {
         "format": "bestaudio/best",
         "outtmpl": outtmpl,
@@ -145,16 +149,18 @@ def download_as_mp3(url: str, output_dir: Path) -> tuple[str, str, str]:
         "no_warnings": True,
         "noplaylist": True,
         "http_headers": {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
             "Accept-Language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
         },
         "extractor_args": {
             "youtube": {
-                "player_client": ["android", "ios", "tv_embedded", "web_creator", "mweb"],
-                "skip": ["hls", "dash"],
+                "player_client": ["android_vr", "android", "ios", "tv"],
             }
         },
     }
+
+    if cookie_file.exists():
+        ydl_opts["cookiefile"] = str(cookie_file)
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=True)
