@@ -165,7 +165,14 @@ def download_as_mp3(url: str, output_dir: Path) -> tuple[str, str, str]:
     }
 
     if cookie_file and cookie_file.exists():
-        ydl_opts["cookiefile"] = str(cookie_file)
+        writable_cookie = output_dir / "active_cookies.txt"
+        try:
+            shutil.copy(cookie_file, writable_cookie)
+            ydl_opts["cookiefile"] = str(writable_cookie)
+        except Exception as e:
+            print(f"[WARN] 複製 Cookie 檔失敗: {e}")
+            ydl_opts["cookiefile"] = str(cookie_file)
+
         ydl_opts["extractor_args"] = {
             "youtube": {
                 "player_client": ["web", "mweb", "android"],
