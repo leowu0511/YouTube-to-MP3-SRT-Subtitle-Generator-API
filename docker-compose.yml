@@ -11,5 +11,6 @@ services:
       - GROQ_API_KEY=${GROQ_API_KEY:-}
     volumes:
       - ./srt_cache:/app/srt_cache
+      - ./:/app/host_files:ro
     tmpfs:
       - /tmp/yt_mp3_downloads:size=512M

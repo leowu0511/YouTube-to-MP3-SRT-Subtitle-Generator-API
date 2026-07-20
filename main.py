@@ -134,6 +134,8 @@ def download_as_mp3(url: str, output_dir: Path) -> tuple[str, str, str]:
     cookie_file = Path("/app/cookies.txt")
     if not cookie_file.exists():
         cookie_file = Path("cookies.txt")
+    if not cookie_file.exists():
+        cookie_file = Path("/app/host_files/cookies.txt")
 
     ydl_opts = {
         "format": "bestaudio/best",
