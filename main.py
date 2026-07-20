@@ -142,6 +142,7 @@ def download_as_mp3(url: str, output_dir: Path) -> tuple[str, str, str]:
 
     ydl_opts = {
         "format": "ba/ba*/bestaudio/best",
+        "remote_components": ["ejs:github"],
         "outtmpl": outtmpl,
         "postprocessors": [
             {
