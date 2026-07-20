@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 # 安裝 ffmpeg 與 deno (yt-dlp 預設 JS 執行環境)
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ffmpeg curl unzip nodejs && \
+    apt-get install -y --no-install-recommends ffmpeg curl unzip nodejs git && \
     curl -fsSL https://deno.land/install.sh | sh && \
     cp /root/.deno/bin/deno /usr/local/bin/deno && \
     apt-get clean && \
